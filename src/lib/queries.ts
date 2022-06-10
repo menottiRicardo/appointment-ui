@@ -15,6 +15,8 @@ const createAppointment = gql`
   mutation Mutation($createAppointmentInput: CreateAppointmentInput!) {
     createAppointment(createAppointmentInput: $createAppointmentInput) {
       id
+      placa
+      date
     }
   }
 `;

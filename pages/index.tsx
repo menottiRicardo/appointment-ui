@@ -2,9 +2,13 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import { ClipboardCheckIcon, SearchIcon } from "@heroicons/react/outline";
-import { useMutation, useQuery } from "@apollo/client";
-import { createAppointment, getAppointments } from "../src/lib/queries";
+import { useQuery } from "@apollo/client";
+import { getAppointments } from "../src/lib/queries";
 import { format } from "date-fns";
+import DateInput from "../components/DateInput";
+import TimePicker from "../components/TimePicker";
+import Modal from "../components/Modal";
+import it from "date-fns/esm/locale/it/index.js";
 enum status {
   "Programada" = "PROGRAMADA",
   "atendida" = "ATENDIDA",
@@ -21,11 +25,32 @@ const Home: NextPage = () => {
     date: "",
     status: status.Programada,
   });
+  const [showModal, setShowModal] = useState(false);
+
+  const [date, setDate] = useState<Date>(new Date());
+  const [time, setTime] = useState("");
   const { loading, error, data } = useQuery(getAppointments, {
     variables: { placa: info.placa },
   });
 
-  const [create] = useMutation(createAppointment);
+  const getInput = () => {
+    const splittedDate = date?.toString().split(" ");
+    const mappedDate = splittedDate?.map((val) =>
+      val === "00:00:00" ? time : val
+    );
+    const joinedDate = mappedDate?.join(" ");
+
+    return {
+      date: joinedDate,
+      placa: info.placa,
+      status: status.Programada,
+    };
+  };
+  const openModal = () => {
+    if (time === "") return;
+    if (date === new Date()) return;
+    setShowModal(true);
+  };
 
   return (
     <div className="">
@@ -35,6 +60,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Modal
+        show={showModal}
+        _show={setShowModal}
+        createAppointmentInput={getInput()}
+      />
       <main className="bg-gray-200 min-h-screen">
         <div className="layout pt-4">
           <h1 className="font-bold text-xl text-center text-emerald-600">
@@ -63,6 +93,10 @@ const Home: NextPage = () => {
             <div className="">
               {loading === true ? (
                 <p>Loading</p>
+              ) : data.appointments.length === 0 ? (
+                <p className="ml-3 mt-2 font-bold">
+                  No Hay citas con este numero de placa
+                </p>
               ) : (
                 <>
                   {data.appointments.map((appt: appointment) => {
@@ -83,9 +117,28 @@ const Home: NextPage = () => {
                   })}
                 </>
               )}
+              {/* {data.appointments.length === 0 && (
+                <p className="ml-3 mt-2 font-bold">
+                  No Hay citas con este numero de placa
+                </p>
+              )} */}
             </div>
+          </div>
 
-            <button className="mt-6 flex items-center justify-center w-full rounded-xl bg-emerald-600 py-2 px-3 text-white text-xl cursor-pointer">
+          <div className="mt-5 bg-white p-2 rounded-lg">
+            <p className="text-center text-lg">
+              Seleccione la hora y fecha para agendar una nueva cita
+            </p>
+
+            <div className="flex justify-center mb-2">
+              <TimePicker time={time} setTime={setTime} />
+            </div>
+            <DateInput date={date} setDate={setDate} />
+
+            <button
+              className="mt-6 flex items-center justify-center w-full rounded-xl bg-emerald-600 py-2 px-3 text-white text-xl cursor-pointer"
+              onClick={openModal}
+            >
               Agendar Nueva
             </button>
           </div>
