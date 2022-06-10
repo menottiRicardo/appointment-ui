@@ -90,7 +90,7 @@ const Home: NextPage = () => {
 
             {/* citas container */}
 
-            <div className="">
+            <div className="md:grid md:grid-cols-2 md:gap-x-2">
               {loading === true ? (
                 <p>Loading</p>
               ) : data.appointments.length === 0 ? (
@@ -106,7 +106,7 @@ const Home: NextPage = () => {
                     return (
                       <div
                         key={appt.id}
-                        className="flex my-3 items-center w-full bg-green-200 rounded-md p-2"
+                        className="flex my-3 items-center w-full bg-green-200 rounded-md p-2 md:w-full"
                       >
                         <ClipboardCheckIcon className="w-6 mr-2" />
 

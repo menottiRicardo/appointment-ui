@@ -35,7 +35,7 @@ const Modal = ({ show, _show, createAppointmentInput }: any) => {
       <>
         {show && (
           <div className="fixed w-full h-full bg-black flex items-center justify-center bg-opacity-90 z-50 select-none px-4 inset-0">
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 rounded-md shadow-xl px-2 py-3 grid select-none bg-white">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-5/12 rounded-md shadow-xl px-2 py-3 grid select-none bg-white">
               <h1 className="font-bold text-xl text-center text-primary-600">
                 Cita agendada
               </h1>
@@ -59,7 +59,7 @@ const Modal = ({ show, _show, createAppointmentInput }: any) => {
     <>
       {show && (
         <div className="fixed w-full h-full bg-black flex items-center justify-center bg-opacity-90 z-50 select-none px-4 inset-0">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 rounded-md shadow-xl px-2 py-3 grid select-none bg-white">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-5/12 rounded-md shadow-xl px-2 py-3 grid select-none bg-white">
             <h1 className="font-bold text-xl text-center text-primary-600">
               Estas programando una cita para
             </h1>
