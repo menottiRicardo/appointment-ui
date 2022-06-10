@@ -1,12 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import { SearchIcon } from "@heroicons/react/outline";
+import { ClipboardCheckIcon, SearchIcon } from "@heroicons/react/outline";
+import { useMutation, useQuery } from "@apollo/client";
+import { createAppointment, getAppointments } from "../src/lib/queries";
+import { format } from "date-fns";
 enum status {
   "Programada" = "PROGRAMADA",
   "atendida" = "ATENDIDA",
 }
 type appointment = {
+  id?: number;
   placa: string;
   date: string;
   status: status;
@@ -17,6 +21,11 @@ const Home: NextPage = () => {
     date: "",
     status: status.Programada,
   });
+  const { loading, error, data } = useQuery(getAppointments, {
+    variables: { placa: info.placa },
+  });
+
+  const [create] = useMutation(createAppointment);
 
   return (
     <div className="">
@@ -49,8 +58,35 @@ const Home: NextPage = () => {
               />
             </div>
 
+            {/* citas container */}
+
+            <div className="">
+              {loading === true ? (
+                <p>Loading</p>
+              ) : (
+                <>
+                  {data.appointments.map((appt: appointment) => {
+                    const date = new Date(appt.date);
+                    const formatedDate = format(date, "d-LL-yyyy h-mbbb");
+
+                    return (
+                      <div
+                        key={appt.id}
+                        className="flex my-3 items-center w-full bg-green-200 rounded-md p-2"
+                      >
+                        <ClipboardCheckIcon className="w-6 mr-2" />
+
+                        <p>{formatedDate}</p>
+                        <p className="font-bold ml-2">{appt.status}</p>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+
             <button className="mt-6 flex items-center justify-center w-full rounded-xl bg-emerald-600 py-2 px-3 text-white text-xl cursor-pointer">
-              Buscar
+              Agendar Nueva
             </button>
           </div>
         </div>
